@@ -37,6 +37,7 @@ app.post('/api/auth/login', passport.authenticate('local'),
 app.post('/api/auth/logout', passport.authenticate('local'),
 (req, res) => {
     req.logout((e) => { console.log(e)});
+    res.json('LogOut');
 })
 app.get('/api/auth/cheker', (req, res) => {
     res.json(req.user);
