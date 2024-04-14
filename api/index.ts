@@ -1,10 +1,8 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import { Users } from '../db/Users';
 
 const app = express();
 app.use(express.json());
-
 
 app.get('/api', (req, res) => {
     const user = Users.shift();
@@ -13,3 +11,7 @@ app.get('/api', (req, res) => {
     }
     res.json('undefined');
 })
+
+//app.listen(3000, () => console.log('server'));
+
+export default app;

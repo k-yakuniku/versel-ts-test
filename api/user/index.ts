@@ -1,11 +1,18 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import { Users, UsersType } from '../../db/Users';
+
 
 const app = express();
 app.use(express.json());
 
-
+const sessionCheck = (req: any, res: Response, next: NextFunction) => {
+    if(req.isAuthenticated()) {
+        next();
+    } else {
+        res.json('Not_Session');
+    }
+}
 app.get('/api/user', (req, res) => {
     if(Users) {
         return res.json(Users);
@@ -22,11 +29,11 @@ app.post('/api/user', (req, res) => {
             id: String(Math.round(Math.random() * 1000)),
             email, password,
         }
-        Users.push(newUser);
-        return res.status(200).json(newUser);
+    Users.push(newUser);
+    return res.status(200).json(newUser);
     }
 });
-app.patch('/api/user', (req, res) => {
+app.patch('/api/user', sessionCheck,  (req, res) => {
     const { email, password, name } = req.body;
     const user = Users.find((v) => v.email === email && v.password === password);
     if(user) {
@@ -37,7 +44,7 @@ app.patch('/api/user', (req, res) => {
     }
 
 });
-app.delete('/api/user', (req, res) => {
+app.delete('/api/user', sessionCheck, (req, res) => {
     const { email, password } = req.body;
     const index = Users.findIndex((v) => v.email === email && v.password === password);
     if(index) {
@@ -47,3 +54,5 @@ app.delete('/api/user', (req, res) => {
         return res.status(400).json('Failed');
     }    
 });
+
+export default app;
